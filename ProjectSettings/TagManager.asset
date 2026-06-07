@@ -9,6 +9,7 @@ TagManager:
   - ScreenCamera
   - cockpit_capitalLaser
   - PickUp
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
