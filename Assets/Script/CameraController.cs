@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    // 1. THIS IS THE FIX: We changed 'private' to 'public' so the Player can access it!
     public Transform target;
     
     [SerializeField]
@@ -22,7 +21,6 @@ public class CameraController : MonoBehaviour {
 
     void MoveCamera () 
     {
-        // SAFETY CHECK: Only follow the target if it exists
         if (target != null)
         {
             transform.position = Vector3.Lerp(transform.position, target.position + targetOffset, movementSpeed * Time.deltaTime);

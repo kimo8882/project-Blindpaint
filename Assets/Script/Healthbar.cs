@@ -20,14 +20,12 @@ public class HealthBar : MonoBehaviour
     {
         cam = Camera.main;
 
-        // 1. Find the Player
         Player playerScript = GetComponentInParent<Player>();
         if (playerScript != null)
         {
             _playerTransform = playerScript.transform;
         }
 
-        // 2. THE FOOLPROOF FIX: Search every image until it finds "Foreground"
         if (healthbarSprite == null)
         {
             Image[] allImages = GetComponentsInChildren<Image>();
@@ -41,10 +39,9 @@ public class HealthBar : MonoBehaviour
             }
         }
 
-        // 3. The Ultimate Alarm
         if (healthbarSprite == null)
         {
-            Debug.LogError("🚨 HEALTHBAR: I searched everywhere but I cannot find an object named 'Foreground'!");
+            Debug.LogError("HEALTHBAR: I searched everywhere but I cannot find an object named 'Foreground'!");
         }
     }
 

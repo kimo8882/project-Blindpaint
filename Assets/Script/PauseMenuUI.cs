@@ -12,7 +12,7 @@ public class PauseMenuUI : NetworkBehaviour
 
     private PlayerController _playerController;
     private CameraController _cameraController;
-    private PlayerGun _playerGun; // We grab the gun script here!
+    private PlayerGun _playerGun; 
 
     void Start()
     {
@@ -52,14 +52,12 @@ public class PauseMenuUI : NetworkBehaviour
 
         if (isPaused)
         {
-            // DISABLE MOVEMENT & SHOOTING
             if (_playerController != null) _playerController.enabled = false;
             if (_cameraController != null) _cameraController.enabled = false;
             if (_playerGun != null) _playerGun.enabled = false;
         }
         else
         {
-            // TURN MOVEMENT & SHOOTING BACK ON
             if (_playerController != null) _playerController.enabled = true;
             if (_cameraController != null) _cameraController.enabled = true;
             if (_playerGun != null) _playerGun.enabled = true;

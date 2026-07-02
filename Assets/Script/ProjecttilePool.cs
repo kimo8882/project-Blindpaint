@@ -27,7 +27,6 @@ public class ProjectilePool : MonoBehaviour {
 
         for (int i = 0; i < poolSize; i++) {
             GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-            // THE FIX: Make sure bullets start hidden!
             projectile.SetActive(false); 
             projectilesInPool.Add(projectile.GetComponent<Projectile>());
         }
@@ -39,10 +38,8 @@ public class ProjectilePool : MonoBehaviour {
         projectile.transform.position = position;
         projectile.transform.rotation = rotation;
 
-        // THE FIX: Tell the bullet who shot it BEFORE it wakes up!
         projectile.shooterId = shooterId;
 
-        // Now turn it on!
         projectile.gameObject.SetActive(true); 
 
         projectilesInPool.Remove(projectile);
@@ -51,7 +48,6 @@ public class ProjectilePool : MonoBehaviour {
 
     public void ReturnToPool(Projectile projectile)
     {
-        // THE FIX: Turn the bullet OFF when it returns to the pool
         projectile.gameObject.SetActive(false); 
         
         projectile.transform.position = transform.position;

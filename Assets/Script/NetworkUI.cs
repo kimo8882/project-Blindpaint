@@ -13,11 +13,11 @@ public class NetworkUI : MonoBehaviour
     {
 #if UNITY_EDITOR
         // --- 1. WE ARE IN THE UNITY EDITOR ---
-        Debug.Log("👑 Main Editor detected! Auto-Starting as HOST...");
+        Debug.Log("Main Editor detected! Auto-Starting as HOST...");
         NetworkManager.Singleton.StartHost();
 #else
         // --- 2. WE ARE IN THE BUILT .EXE GAME ---
-        Debug.Log("🎮 Built Game detected! Auto-Starting as CLIENT...");
+        Debug.Log("Built Game detected! Auto-Starting as CLIENT...");
         NetworkManager.Singleton.StartClient();
 #endif
     }

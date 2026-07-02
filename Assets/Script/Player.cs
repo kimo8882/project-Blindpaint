@@ -62,7 +62,6 @@ public class Player : NetworkBehaviour
     {
         if (_healthbar != null) _healthbar.UpdateHealthBar(_maxHealth, currentHealth.Value);
 
-        // NEW: Update the paint splatters ONLY on the local player's screen
         if (IsOwner && _damageScreenEffect != null)
         {
             _damageScreenEffect.UpdateDamageScreen(currentHealth.Value, _maxHealth);
@@ -89,10 +88,8 @@ public class Player : NetworkBehaviour
 
         currentHealth.Value -= damage;
 
-        // Check if this specific bullet was the killing blow!
         bool isFatalShot = currentHealth.Value <= 0;
 
-        // Send the visual effect to everyone, but ONLY play the audio if they are surviving
         SpawnHitEffectClientRpc(!isFatalShot);
         PlayHitMarkerClientRpc(shooterId);
 
@@ -100,7 +97,7 @@ public class Player : NetworkBehaviour
         {
             currentHealth.Value = 0;
 
-            Die(); // The death sound will play here instead!
+            Die(); 
             DropLoot();
             RewardShooter(shooterId);
         }
@@ -130,11 +127,9 @@ public class Player : NetworkBehaviour
 
     private void Die()
     {
-        // 1. VISUAL: Everyone sees the body drop
         SpawnDeathEffectClientRpc();
         isDead.Value = true;
 
-        // 2. AUDIO: Only the dead player hears their own death scream
         ClientRpcParams victimParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } } };
         PlayDeathSoundClientRpc(victimParams);
     }
@@ -157,7 +152,6 @@ public class Player : NetworkBehaviour
     }
 
 
-    // --- AUDIO RPCs (Targeted to strictly ONE computer) ---
     [ClientRpc]
     private void PlayGettingHitSoundClientRpc(ClientRpcParams rpcParams = default)
     {
@@ -167,10 +161,8 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     private void PlayHitMarkerClientRpc(ulong shooterId)
     {
-        // Check if THIS client instance belongs to the player who actually fired the shot
         if (NetworkManager.Singleton.LocalClientId == shooterId)
         {
-            // Plays audio directly relative to the main camera transform so it behaves like 2D UI audio
             if (_hitMarkerSound != null) AudioSource.PlayClipAtPoint(_hitMarkerSound, Camera.main.transform.position);
         }
     }

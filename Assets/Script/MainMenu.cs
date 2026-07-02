@@ -18,13 +18,10 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        // Check if the keyboard exists, and if the Esc key was pressed this exact frame
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            // If the settings panel is currently turned on...
             if (settingsPanel != null && settingsPanel.activeInHierarchy)
             {
-                // ...Turn it off!
                 settingsPanel.SetActive(false);
             }
         }
@@ -35,7 +32,7 @@ public class MainMenu : MonoBehaviour
     }
     public void StartDeathmatch()
     {
-        Debug.Log("🚨 THE BUTTON WAS CLICKED!"); 
+        Debug.Log("THE BUTTON WAS CLICKED!"); 
         SceneManager.LoadScene("SampleScene");
     }
 
