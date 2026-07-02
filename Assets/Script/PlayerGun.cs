@@ -1,80 +1,99 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode; 
+using Unity.Netcode;
 
-public class PlayerGun : NetworkBehaviour { 
-    
+public class PlayerGun : NetworkBehaviour
+{
+
     [SerializeField] Transform firingPoint;
     [SerializeField] float firingSpeed = 1f;
 
     [Header("Ammo Settings")]
     [SerializeField] private int maxAmmo = 20;
     [SerializeField] private int maxBottles = 3;
-    [SerializeField] private float reloadTime = 1.5f; 
-    
+    [SerializeField] private float reloadTime = 1.5f;
+
+    [Header("Weapon Audio")]
+    public AudioClip shootSound;
+    public AudioSource weaponAudioSource;
+
     public int currentAmmo;
     public int currentBottles;
     private bool isReloading = false;
 
     private float lastTimeShot = 0;
-    private int lastButtonUsed = -1; 
+    private int lastButtonUsed = -1;
 
-    public override void OnNetworkSpawn() {
+    public override void OnNetworkSpawn()
+    {
         currentAmmo = maxAmmo;
         currentBottles = maxBottles;
     }
 
-    public void Shoot(int buttonIndex) {
+    public void Shoot(int buttonIndex)
+    {
         if (isReloading) return;
-        
-        if (currentAmmo <= 0) {
+
+        if (currentAmmo <= 0)
+        {
             Debug.Log("Out of ammo! Press R to reload.");
             return;
         }
 
         bool isAlternating = (buttonIndex != lastButtonUsed) && (lastButtonUsed != -1);
 
-        if (!isAlternating) {
-            if (lastTimeShot + firingSpeed > Time.time) return; 
+        if (!isAlternating)
+        {
+            if (lastTimeShot + firingSpeed > Time.time) return;
         }
 
         lastTimeShot = Time.time;
-        lastButtonUsed = buttonIndex; 
+        lastButtonUsed = buttonIndex;
         currentAmmo--;
-        
+
         ShootServerRpc(OwnerClientId);
     }
 
-    public void Reload() {
+    public void Reload()
+    {
         if (isReloading || currentAmmo == maxAmmo || currentBottles <= 0) return;
         StartCoroutine(ReloadRoutine());
     }
 
-    private IEnumerator ReloadRoutine() {
+    private IEnumerator ReloadRoutine()
+    {
         isReloading = true;
         yield return new WaitForSeconds(reloadTime);
 
         currentBottles--;
         currentAmmo = maxAmmo;
-        
+
         isReloading = false;
     }
 
     [ServerRpc]
-    private void ShootServerRpc(ulong shooterId) {
+    private void ShootServerRpc(ulong shooterId)
+    {
         ShootClientRpc(shooterId);
     }
 
     [ClientRpc]
-    private void ShootClientRpc(ulong shooterId) {
-        // THE FIX: Send the ID directly into the Object Pool
+    private void ShootClientRpc(ulong shooterId)
+    {
         ProjectilePool.Instance.Instantiate(firingPoint.position, firingPoint.rotation, shooterId);
+
+        if (shootSound != null && weaponAudioSource != null)
+        {
+            weaponAudioSource.PlayOneShot(shootSound);
+        }
     }
 
     [ClientRpc]
-    public void RefillClientRpc() {
-        if (IsOwner) {
+    public void RefillClientRpc()
+    {
+        if (IsOwner)
+        {
             currentAmmo = maxAmmo;
             currentBottles = maxBottles;
         }
